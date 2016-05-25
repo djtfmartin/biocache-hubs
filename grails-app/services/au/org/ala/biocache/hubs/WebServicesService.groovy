@@ -15,6 +15,8 @@ import org.codehaus.groovy.grails.web.json.JSONElement
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.springframework.web.client.RestClientException
 
+import javax.annotation.PostConstruct
+
 /**
  * Service to perform web service DAO operations
  */
@@ -22,7 +24,12 @@ class WebServicesService {
 
     public static final String ENVIRONMENTAL = "Environmental"
     public static final String CONTEXTUAL = "Contextual"
-    def grailsApplication, facetsCacheService
+    def grailsApplication, facetsCacheServiceBean
+
+    @PostConstruct
+    def init(){
+        facetsCacheServiceBean = grailsApplication.mainContext.getBean('facetsCacheService')
+    }
 
     def JSONObject fullTextSearch(SpatialSearchRequestParams requestParams) {
         def url = "${grailsApplication.config.biocache.baseUrl}/occurrences/search?${requestParams.getEncodedParams()}"
@@ -58,7 +65,7 @@ class WebServicesService {
                 // do this once
                 facetName = item.fq?.tokenize(':')?.get(0)?.replaceFirst(/^\-/,'')
                 try {
-                    facetLabelsMap = facetsCacheService.getFacetNamesFor(facetName) // cached
+                    facetLabelsMap = facetsCacheServiceBean.getFacetNamesFor(facetName) // cached
                 } catch (IllegalArgumentException iae) {
                     log.info "${iae.message}"
                 }
@@ -281,7 +288,8 @@ class WebServicesService {
     @Cacheable('longTermCache')
     def JSONArray getLoggerReasons() {
         def url = "${grailsApplication.config.logger.baseUrl}/logger/reasons"
-        getJsonElements(url)
+        def jsonObj = getJsonElements(url)
+        jsonObj.findAll { !it.deprecated } // skip deprecated reason codes
     }
 
     @Cacheable('longTermCache')
