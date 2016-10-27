@@ -519,12 +519,11 @@ function geocodeAddress(reverseGeocode) {
             initialize();
             loadRecordsLayer();
         }
-
     }
 
     if (!latLng && geocoder && address) {
         //geocoder.getLocations(address, addAddressToPage);
-        geocoder.geocode( {'address': address, region: 'AU'}, function(results, status) {
+        geocoder.geocode( {'address': address, region: EYA_CONF.geocodeRegion}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 // geocode was successful
                 //console.log('geocodeAddress results', results);

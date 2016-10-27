@@ -47,7 +47,8 @@
             speciesPageUrl: "${speciesPageUrl}",
             queryContext: "${queryContext}",
             locale: "${org.springframework.web.servlet.support.RequestContextUtils.getLocale(request)}",
-            hasGoogleKey: ${grailsApplication.config.google.apikey as Boolean}
+            hasGoogleKey: ${grailsApplication.config.google.apikey as Boolean},
+            geocodeRegion: ${grailsApplication.config.geocode.region?:'AU'}
         }
 
         //make the taxa and rank global variable so that they can be used in the download
