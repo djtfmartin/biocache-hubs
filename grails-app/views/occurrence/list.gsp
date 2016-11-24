@@ -22,6 +22,9 @@
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google.apikey}" type="text/javascript"></script>
     </g:if>
 
+    <g:set var="fqParams" value="${(params.fq) ? "&fq=" + params.list('fq')?.join('&fq=') : ''}"/>
+    <g:set var="searchString" value="${raw(sr?.urlParameters).encodeAsURL()}"/>
+
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         var BC_CONF = {
@@ -29,7 +32,7 @@
             serverName: "${grailsApplication.config.serverName}${request.contextPath}",
             searchString: "${searchString}", //  JSTL var can contain double quotes // .encodeAsJavaScript()
             facetQueries: "${fqParams.encodeAsURL()}",
-            facetDownloadQuery: "${searchString}${fqParamsSingleQ}",
+            facetDownloadQuery: "${searchString}",
             queryString: "${queryDisplay.encodeAsJavaScript()}",
             bieWebappUrl: "${grailsApplication.config.bie.baseUrl}",
             bieWebServiceUrl: "${grailsApplication.config.bieService.baseUrl}",
@@ -64,17 +67,7 @@
     <g:if test="${grailsApplication.config.skin.useAlaBie?.toBoolean()}">
         <r:require module="bieAutocomplete"/>
     </g:if>
-    <script type="text/javascript">
-        // single global var for app conf settings
-        <g:set var="fqParamsSingleQ" value="${(params.fq) ? ' AND ' + params.list('fq')?.join(' AND ') : ''}"/>
-        <g:set var="fqParams" value="${(params.fq) ? "&fq=" + params.list('fq')?.join('&fq=') : ''}"/>
-        <g:set var="searchString" value="${raw(sr?.urlParameters).encodeAsURL()}"/>
 
-
-
-//        google.load('maps','3.5',{ other_params: "sensor=false" });
-        google.load("visualization", "1", {packages:["corechart"]});
-    </script>
 </head>
 
 <body class="occurrence-search">
